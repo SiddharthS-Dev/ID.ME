@@ -1,0 +1,23 @@
+# Local development profile. Values here are development-only and must never be used in production.
+spring:
+  datasource:
+    password: ${IDME_DB_APP_PASSWORD:idme_app_dev}
+  flyway:
+    password: ${IDME_DB_OWNER_PASSWORD:idme_owner_dev}
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false   # local http://localhost only
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+idme:
+  environment: local
+  api-docs:
+    public-access: true

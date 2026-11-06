@@ -1,0 +1,80 @@
+# Production-safe defaults. Secrets come from the environment / secret manager only.
+# Local development overrides live in application-dev.yml (activate with SPRING_PROFILES_ACTIVE=dev).
+spring:
+  application:
+    name: idme
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${IDME_DB_URL:jdbc:postgresql://localhost:55432/idme}
+    username: ${IDME_DB_APP_USER:idme_app}
+    password: ${IDME_DB_APP_PASSWORD:}
+    hikari:
+      schema: idme
+      maximum-pool-size: ${IDME_DB_POOL_SIZE:10}
+  flyway:
+    # Migrations run as the schema owner; the application runs as the restricted runtime role (ADR-0004).
+    user: ${IDME_DB_OWNER_USER:idme_owner}
+    password: ${IDME_DB_OWNER_PASSWORD:}
+    schemas: idme
+    default-schema: idme
+    create-schemas: true
+    clean-disabled: true
+    validate-migration-naming: true
+    placeholders:
+      appRole: ${IDME_DB_APP_USER:idme_app}
+  mvc:
+    problemdetails:
+      enabled: true
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  shutdown: graceful
+  forward-headers-strategy: framework
+  error:
+    include-stacktrace: never
+    include-message: never
+  servlet:
+    session:
+      timeout: 8h
+      cookie:
+        name: IDME_SESSION
+        http-only: true
+        secure: ${IDME_COOKIE_SECURE:true}
+        same-site: lax
+        path: /
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: false
+
+springdoc:
+  api-docs:
+    enabled: ${IDME_API_DOCS_ENABLED:false}
+  swagger-ui:
+    enabled: ${IDME_API_DOCS_ENABLED:false}
+  paths-to-match: /api/**
+
+idme:
+  environment: ${IDME_ENVIRONMENT:production}
+  public-base-url: ${IDME_PUBLIC_BASE_URL:http://localhost:5173}
+  api-docs:
+    public-access: ${IDME_API_DOCS_ENABLED:false}
+  demo-data:
+    enabled: false
+
+logging:
+  level:
+    root: INFO
