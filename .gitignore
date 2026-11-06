@@ -1,0 +1,38 @@
+# Local portable toolchain and database data (see docs/decisions/ADR-0017)
+/.tools/
+
+# Environment and secrets — never commit real credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Backend
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+*.log
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
+frontend/.vite/
+*.tsbuildinfo
+
+# Supplied source materials (internal documents) stay local; the repository is public.
+/docs/sources/
+
+# Local media storage (development adapter)
+/var/
+
+# IDE / OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.iml
+.DS_Store
+Thumbs.db
